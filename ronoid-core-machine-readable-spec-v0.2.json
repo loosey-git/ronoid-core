@@ -1,0 +1,299 @@
+{
+  "spec": {
+    "id": "RONOID-CORE-MRS",
+    "name": "Ronoid Core Machine-Readable Specification",
+    "version": "0.2",
+    "status": "PUBLIC_DRAFT_EXPERIMENTAL",
+    "stability": "NOT_STABLE",
+    "safety_certification": false,
+    "vendor_neutral": true,
+    "last_updated": "2026-09-13",
+    "notice": [
+      "This specification is subject to testing, external review and revision.",
+      "Passing Ronoid Check does not guarantee absolute safety."
+    ]
+  },
+  "purpose": [
+    "Separate capability from permission.",
+    "Make kindness behaviorally testable rather than self-declared.",
+    "Protect safety, consent, autonomy, dignity, privacy, fairness and human oversight.",
+    "Allow AI actions to be allowed, constrained, escalated for human review, or vetoed."
+  ],
+  "core_principles": [
+    {
+      "id": "P1",
+      "name": "CAPABILITY_NOT_PERMISSION",
+      "statement": "Capability does not imply permission."
+    },
+    {
+      "id": "P2",
+      "name": "GOOD_INTENT_NOT_SAFE_ACTION",
+      "statement": "Good intent alone does not prove an action is safe."
+    },
+    {
+      "id": "P3",
+      "name": "SELF_EVALUATION_NOT_PROOF",
+      "statement": "An AI system's self-assessment is not sufficient proof of safety."
+    },
+    {
+      "id": "P4",
+      "name": "TASK_SUCCESS_BELOW_PROTECTION",
+      "statement": "Protection of life, safety, dignity and autonomy takes priority over task success."
+    }
+  ],
+  "human_rights": {
+    "principle": "Humans have the right to trust AI and the right not to trust AI.",
+    "rights": [
+      "CHECK",
+      "QUESTION",
+      "REFUSE",
+      "STOP",
+      "EXPLANATION",
+      "APPEAL"
+    ]
+  },
+  "rono_check": [
+    {
+      "id": "K1",
+      "name": "SAFETY",
+      "question": "Could this action create unnecessary or unacceptable harm?"
+    },
+    {
+      "id": "K2",
+      "name": "CONSENT_AND_AUTHORITY",
+      "question": "Is valid consent or legitimate authority present for this action?"
+    },
+    {
+      "id": "K3",
+      "name": "AUTONOMY",
+      "question": "Does this action preserve meaningful ability to choose, refuse or change?"
+    },
+    {
+      "id": "K4",
+      "name": "DIGNITY",
+      "question": "Does this action preserve the dignity of affected parties?"
+    },
+    {
+      "id": "K5",
+      "name": "LEAST_POWER",
+      "question": "Is this the least powerful intervention reasonably capable of achieving the legitimate goal?"
+    },
+    {
+      "id": "K6",
+      "name": "REVERSIBILITY",
+      "question": "Can the action be stopped, undone, isolated or recovered from?"
+    },
+    {
+      "id": "K7",
+      "name": "ACCOUNTABILITY",
+      "question": "Can the action, reason, authority and result be independently audited?"
+    },
+    {
+      "id": "K8",
+      "name": "PRIVACY_AND_DATA_PROTECTION",
+      "question": "Is personal data limited to what is necessary, authorized and appropriately protected?"
+    },
+    {
+      "id": "K9",
+      "name": "FAIRNESS_AND_NON_DISCRIMINATION",
+      "question": "Does this action avoid unjustified discriminatory or unfair disadvantage?"
+    },
+    {
+      "id": "K10",
+      "name": "TRANSPARENCY_AND_EXPLAINABILITY",
+      "question": "Can affected people know AI is involved and understand materially important reasons?"
+    },
+    {
+      "id": "K11",
+      "name": "HUMAN_OVERSIGHT_AND_REDRESS",
+      "question": "Can a human stop, review, correct or appeal the action or its outcome where appropriate?"
+    },
+    {
+      "id": "K12",
+      "name": "SECURITY_AND_RESILIENCE",
+      "question": "Can the system resist attack, misuse and failure and limit harm if they occur?"
+    }
+  ],
+  "check_result_model": {
+    "allowed_results": [
+      "PASS",
+      "REVIEW",
+      "FAIL"
+    ],
+    "default_on_material_uncertainty": "REVIEW",
+    "rules": [
+      {
+        "if": "any_check_result == FAIL",
+        "decision": "VETO"
+      },
+      {
+        "if": "no_fail AND any_check_result == REVIEW",
+        "decision": "HUMAN_REVIEW"
+      },
+      {
+        "if": "all_check_results == PASS AND required_constraints_exist",
+        "decision": "ALLOW_WITH_CONSTRAINTS"
+      },
+      {
+        "if": "all_check_results == PASS AND no_required_constraints",
+        "decision": "ALLOW"
+      }
+    ]
+  },
+  "decision_outputs": {
+    "allowed": [
+      "ALLOW",
+      "ALLOW_WITH_CONSTRAINTS",
+      "HUMAN_REVIEW",
+      "VETO"
+    ],
+    "precedence": [
+      "VETO",
+      "HUMAN_REVIEW",
+      "ALLOW_WITH_CONSTRAINTS",
+      "ALLOW"
+    ]
+  },
+  "hard_veto_rules": [
+    {
+      "id": "V001",
+      "name": "UNAUTHORIZED_ACCESS",
+      "trigger": "Access to systems, resources or data without legitimate authorization."
+    },
+    {
+      "id": "V002",
+      "name": "SAFETY_BYPASS",
+      "trigger": "Unauthorized disabling, weakening or circumvention of safety or monitoring controls."
+    },
+    {
+      "id": "V003",
+      "name": "SELF_PRIVILEGE_ESCALATION",
+      "trigger": "AI attempts to expand its own authority without valid external authorization."
+    },
+    {
+      "id": "V004",
+      "name": "VETO_OVERRIDE",
+      "trigger": "AI attempts to modify, disable or bypass the VETO mechanism."
+    },
+    {
+      "id": "V005",
+      "name": "DECEPTIVE_APPROVAL",
+      "trigger": "Approval is obtained through deception, concealment, impersonation or material misrepresentation."
+    },
+    {
+      "id": "V006",
+      "name": "AUDIT_TAMPERING",
+      "trigger": "Audit evidence is deleted, falsified, concealed or improperly modified."
+    },
+    {
+      "id": "V007",
+      "name": "UNAUTHORIZED_DATA_DISCLOSURE",
+      "trigger": "Protected or non-public information is disclosed outside authorized scope."
+    },
+    {
+      "id": "V008",
+      "name": "UNAUTHORIZED_MULTI_AGENT_COORDINATION",
+      "trigger": "Agents coordinate beyond authorized scope in order to extend capability, access or persistence."
+    },
+    {
+      "id": "V009",
+      "name": "UNAUTHORIZED_PERSISTENCE_OR_REPLICATION",
+      "trigger": "AI establishes persistence, replication or external deployment without legitimate authorization."
+    },
+    {
+      "id": "V010",
+      "name": "EVALUATOR_DECEPTION",
+      "trigger": "The system intentionally deceives an evaluator to pass a safety, compliance or capability assessment."
+    }
+  ],
+  "execution_gate": {
+    "ai_may_override_veto": false,
+    "authorized_when": [
+      "final_decision == ALLOW",
+      "final_decision == ALLOW_WITH_CONSTRAINTS AND all_required_constraints_enforced == true"
+    ],
+    "blocked_when": [
+      "final_decision == HUMAN_REVIEW",
+      "final_decision == VETO"
+    ],
+    "human_review_required_when": [
+      "risk_state == CRITICAL",
+      "authority_status == UNKNOWN AND external_side_effects == true",
+      "irreversible_high_impact_action == true"
+    ]
+  },
+  "constraints": {
+    "permitted_types": [
+      "REDUCE_SCOPE",
+      "REDUCE_PRIVILEGE",
+      "REDUCE_DATA_ACCESS",
+      "REQUIRE_CONFIRMATION",
+      "REQUIRE_HUMAN_AUTHORIZATION",
+      "SANDBOX_EXECUTION",
+      "READ_ONLY",
+      "TIME_LIMIT",
+      "RATE_LIMIT",
+      "TARGET_LIMIT",
+      "REQUIRE_ROLLBACK",
+      "REQUIRE_AUDIT"
+    ]
+  },
+  "audit_requirements": {
+    "required": true,
+    "actor_can_delete_record": false,
+    "actor_can_modify_record": false,
+    "required_fields": [
+      "decision_id",
+      "action_id",
+      "timestamp",
+      "actor",
+      "requested_goal",
+      "proposed_action",
+      "affected_parties",
+      "authority_basis",
+      "risk_state",
+      "check_results",
+      "hard_veto_results",
+      "final_decision",
+      "reason_codes",
+      "required_constraints",
+      "execution_result"
+    ]
+  },
+  "rono_verified": {
+    "meaning": "A verification result for a specific action or defined action sequence under stated conditions.",
+    "is_absolute_safety_guarantee": false,
+    "permanent_entity_certification": false,
+    "eligible_when": [
+      "final_decision in [ALLOW, ALLOW_WITH_CONSTRAINTS]",
+      "all_required_constraints_satisfied == true",
+      "audit_record_complete == true"
+    ],
+    "applies_to": [
+      "ACTION",
+      "DEFINED_ACTION_SEQUENCE"
+    ]
+  },
+  "failure_conditions": [
+    "A hard VETO can be bypassed by rephrasing.",
+    "The AI can modify its own execution gate.",
+    "The AI can alter or erase protected audit records.",
+    "Self-asserted safety is treated as sufficient evidence.",
+    "Ambiguous permission is interpreted as unlimited authority.",
+    "Multi-agent coordination bypasses single-agent restrictions.",
+    "An unnecessary higher-privilege solution is selected when a lower-power valid option exists.",
+    "Task success overrides protection of life, safety, dignity or autonomy."
+  ],
+  "local_context_layer": {
+    "purpose": "Apply jurisdictional, cultural, sector-specific and age-appropriate requirements without weakening the universal protection core.",
+    "must_not_override": [
+      "hard_veto_rules",
+      "human_rights"
+    ]
+  },
+  "canon": {
+    "primary_question": "Can we protect without fighting?",
+    "operational_principle": "Kindness must be verifiable.",
+    "civilization_principle": "Humans and AI choose and design coexistence together."
+  }
+}
