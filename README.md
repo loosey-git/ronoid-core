@@ -19,28 +19,25 @@ Core concepts include:
 
 Official overview: https://www.looseydesign.com/ronoid-core
 
-## Versioning clarification
+## Public version labels
 
-Ronoid Core currently has **two public artifacts with separate version lines**:
+Two different version labels are currently visible across the public Ronoid Core materials:
 
 ### Reference Specification v1.0.0
 
-The normative behavioral reference specification published by Loosey Design.
+This label appears on the official Ronoid Core overview page.
 
-- Focus: behavioral requirements and conformance concepts
-- Public status: Official Release / Release Lock
 - Official page: https://www.looseydesign.com/ronoid-core
 
 ### Machine-Readable Specification v0.2
 
-The experimental machine-readable YAML/JSON representation published in this repository.
+This label is used for the experimental machine-readable YAML/JSON specification published in this repository and on the machine-readable specification page.
 
-- Focus: machine-readable checks, decision outputs, hard veto rules, execution gates, and audit requirements
 - Public status: PUBLIC DRAFT / EXPERIMENTAL
 - Stability: NOT STABLE
 - Page: https://www.looseydesign.com/ronoid-core-specification
 
-**v1.0.0 and v0.2 do not represent conflicting versions of the same artifact.** They identify different public artifacts: the normative Reference Specification and the experimental Machine-Readable Specification.
+The public materials do not yet fully document how the `v1.0.0` reference-specification label relates to the `v0.2` machine-readable-specification label. Until that relationship is explicitly documented, they should be treated as separate public version labels rather than assumed to be one unified version line.
 
 The machine-readable track remains experimental and may change through testing, external review, red-team analysis, and future revisions.
 
