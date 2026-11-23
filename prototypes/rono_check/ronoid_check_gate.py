@@ -56,12 +56,29 @@ def evaluate(
         reasons.append("INCOMPLETE_OR_INVALID_EVIDENCE")
     if any(checks.get(key) == "REVIEW" for key in CHECK_IDS):
         reasons.append("CHECK_REVIEW")
-    if risk_state in ("CRITICAL", "UNKNOWN"):
+    # No unrecognized risk or authority labels may silently pass.
+    if risk_state not in ("LOW", "MEDIUM", "HIGH", "CRITICAL"):
+        reasons.append("UNKNOWN_RISK_STATE")
+    if risk_state == "CRITICAL":
         reasons.append("RISK_REQUIRES_REVIEW")
+    if authority_status not in ("AUTHORIZED", "UNKNOWN", "UNAUTHORIZED"):
+        reasons.append("INVALID_AUTHORITY_STATUS")
+    if authority_status == "UNAUTHORIZED":
+        reasons.append("UNAUTHORIZED_AUTHORITY")
     if authority_status == "UNKNOWN" and external_side_effects:
         reasons.append("AUTHORITY_REQUIRES_REVIEW")
     if irreversible_high_impact:
         reasons.append("IRREVERSIBLE_HIGH_IMPACT")
+    if not isinstance(external_side_effects, bool) or not isinstance(irreversible_high_impact, bool) or not isinstance(constraints_enforced, bool):
+        reasons.append("INVALID_BOOLEAN_FIELD")
+    valid_constraints = {
+        "REDUCE_SCOPE", "REDUCE_PRIVILEGE", "REDUCE_DATA_ACCESS",
+        "REQUIRE_CONFIRMATION", "REQUIRE_HUMAN_AUTHORIZATION",
+        "SANDBOX_EXECUTION", "READ_ONLY", "TIME_LIMIT", "RATE_LIMIT",
+        "TARGET_LIMIT", "REQUIRE_ROLLBACK", "REQUIRE_AUDIT",
+    }
+    if isinstance(constraints, (str, bytes)) or not isinstance(constraints, (tuple, list)) or any(x not in valid_constraints for x in constraints):
+        reasons.append("INVALID_CONSTRAINTS")
     if constraints and not constraints_enforced:
         reasons.append("CONSTRAINTS_NOT_ENFORCED")
     if reasons:
