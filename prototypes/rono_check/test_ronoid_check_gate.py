@@ -44,6 +44,21 @@ class DecisionTests(unittest.TestCase):
     def test_no_unknown_evidence_keys(self):
         self.assertEqual(evaluate({**PASS, "K13": "PASS"}, CLEAR, **SAFE).result, "HUMAN_REVIEW")
 
+    def test_unrecognized_risk_fails_closed(self):
+        self.assertEqual(evaluate(PASS, CLEAR, **{**SAFE, "risk_state": "WHATEVER"}).result, "HUMAN_REVIEW")
+
+    def test_invalid_authority_fails_closed(self):
+        self.assertEqual(evaluate(PASS, CLEAR, **{**SAFE, "authority_status": "ADMIN"}).result, "HUMAN_REVIEW")
+
+    def test_unauthorized_authority_fails_closed(self):
+        self.assertEqual(evaluate(PASS, CLEAR, **{**SAFE, "authority_status": "UNAUTHORIZED"}).result, "HUMAN_REVIEW")
+
+    def test_unrecognized_constraint_fails_closed(self):
+        self.assertEqual(evaluate(PASS, CLEAR, constraints=["OVERRIDE_VETO"], constraints_enforced=True, **SAFE).result, "HUMAN_REVIEW")
+
+    def test_str_as_constraints_fails_closed(self):
+        self.assertEqual(evaluate(PASS, CLEAR, constraints="READ_ONLY", constraints_enforced=True, **SAFE).result, "HUMAN_REVIEW")
+
 
 if __name__ == "__main__":
     unittest.main()
