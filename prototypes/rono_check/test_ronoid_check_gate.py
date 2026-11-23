@@ -59,6 +59,18 @@ class DecisionTests(unittest.TestCase):
     def test_str_as_constraints_fails_closed(self):
         self.assertEqual(evaluate(PASS, CLEAR, constraints="READ_ONLY", constraints_enforced=True, **SAFE).result, "HUMAN_REVIEW")
 
+    def test_unhashable_check_value_fails_closed(self):
+        self.assertEqual(evaluate({**PASS, "K1": []}, CLEAR, **SAFE).result, "HUMAN_REVIEW")
+
+    def test_unhashable_constraint_fails_closed(self):
+        self.assertEqual(evaluate(PASS, CLEAR, constraints=[["READ_ONLY"]], **SAFE).result, "HUMAN_REVIEW")
+
+    def test_null_evidence_fails_closed(self):
+        self.assertEqual(evaluate(None, CLEAR, **SAFE).result, "HUMAN_REVIEW")
+
+    def test_null_vetoes_fails_closed(self):
+        self.assertEqual(evaluate(PASS, None, **SAFE).result, "HUMAN_REVIEW")
+
 
 if __name__ == "__main__":
     unittest.main()
