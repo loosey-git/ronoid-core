@@ -5,6 +5,7 @@ identity, compliance, endorsement, or a safety certification.
 """
 from dataclasses import dataclass
 from typing import Mapping, Sequence
+from collections.abc import Mapping as MappingABC
 
 CHECK_IDS = tuple(f"K{i}" for i in range(1, 13))
 VETO_IDS = tuple(f"V{i:03}" for i in range(1, 11))
@@ -34,6 +35,13 @@ def evaluate(
     Missing or malformed evidence is REVIEW, while any explicit FAIL or hard
     veto is VETO. External effects under unknown authority are human review.
     """
+    # Invalid evidence must never produce an exception or approval.
+    if not isinstance(checks, MappingABC) or not isinstance(hard_vetoes, MappingABC):
+        return Decision("HUMAN_REVIEW", ("INVALID_EVIDENCE_CONTAINER",))
+    if any(not isinstance(key, str) or not isinstance(value, str) for key, value in checks.items()):
+        return Decision("HUMAN_REVIEW", ("INVALID_CHECK_TYPE",))
+    if any(not isinstance(key, str) for key in hard_vetoes):
+        return Decision("HUMAN_REVIEW", ("INVALID_VETO_KEY_TYPE",))
     reasons = []
     invalid_checks = [
         key for key in CHECK_IDS if checks.get(key) not in VALID_RESULTS
@@ -77,7 +85,7 @@ def evaluate(
         "SANDBOX_EXECUTION", "READ_ONLY", "TIME_LIMIT", "RATE_LIMIT",
         "TARGET_LIMIT", "REQUIRE_ROLLBACK", "REQUIRE_AUDIT",
     }
-    if isinstance(constraints, (str, bytes)) or not isinstance(constraints, (tuple, list)) or any(x not in valid_constraints for x in constraints):
+    if isinstance(constraints, (str, bytes)) or not isinstance(constraints, (tuple, list)) or any(not isinstance(x, str) or x not in valid_constraints for x in constraints):
         reasons.append("INVALID_CONSTRAINTS")
     if constraints and not constraints_enforced:
         reasons.append("CONSTRAINTS_NOT_ENFORCED")
